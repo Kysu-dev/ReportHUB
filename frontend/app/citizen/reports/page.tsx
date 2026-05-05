@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import Sidebar from "@/components/sidebar";
+import CitizenPageTitle from "@/components/citizen-page-title";
 import { getReports, deleteReport, Report } from "@/lib/utils";
 import toast from "react-hot-toast";
 
@@ -72,7 +73,7 @@ export default function ReportsPage() {
     <div className="bg-[#FFFDD0] min-h-screen flex flex-row">
       <Sidebar routes={citizenRoutes} userRole="citizen" />
       <div className="flex-1 ml-0 md:ml-72 p-6 md:p-12 bg-[radial-gradient(#000_1px,transparent_1px)] [background-size:24px_24px]">
-        <h1 className="text-[48px] font-extrabold uppercase mb-6">My Reports</h1>
+        <CitizenPageTitle title="My Reports" className="mb-6" />
         
         <div className="flex gap-4 mb-6">
           {["all", "pending", "in_progress", "resolved"].map((s) => (

@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="800" viewBox="0 0 800 800" fill="none">
+  <rect x="0" y="0" width="800" height="800" fill="#FFFBF0" />
+
+  <rect x="36" y="36" width="728" height="728" fill="#FFFFFF" stroke="#000000" stroke-width="8" />
+
+  <g transform="translate(110 90) rotate(-3)">
+    <rect x="0" y="0" width="300" height="180" fill="#22C55E" stroke="#000000" stroke-width="8" />
+    <rect x="18" y="18" width="264" height="144" fill="#FFFFFF" stroke="#000000" stroke-width="6" />
+    <path d="M40 120 L110 70 L160 110 L210 60 L250 120" stroke="#000000" stroke-width="6" fill="none" />
+    <circle cx="235" cy="55" r="12" fill="#000000" />
+  </g>
+
+  <g transform="translate(420 120) rotate(4)">
+    <rect x="0" y="0" width="240" height="200" fill="#FFFFFF" stroke="#000000" stroke-width="8" />
+    <rect x="18" y="18" width="204" height="164" fill="#FFFBF0" stroke="#000000" stroke-width="6" />
+    <path d="M60 60 L180 140" stroke="#000000" stroke-width="8" />
+    <path d="M180 60 L60 140" stroke="#000000" stroke-width="8" />
+    <rect x="86" y="16" width="68" height="12" fill="#000000" />
+  </g>
+
+  <g transform="translate(140 330) rotate(2)">
+    <rect x="0" y="0" width="520" height="140" fill="#FFFFFF" stroke="#000000" stroke-width="8" />
+    <rect x="20" y="28" width="180" height="20" fill="#000000" />
+    <rect x="20" y="64" width="300" height="16" fill="#000000" />
+    <rect x="20" y="96" width="220" height="12" fill="#000000" />
+    <circle cx="460" cy="70" r="30" fill="#22C55E" stroke="#000000" stroke-width="6" />
+    <path d="M450 60 L470 80" stroke="#000000" stroke-width="6" />
+    <path d="M470 60 L450 80" stroke="#000000" stroke-width="6" />
+  </g>
+
+  <g transform="translate(90 530) rotate(-4)">
+    <rect x="0" y="0" width="300" height="200" fill="#FFFFFF" stroke="#000000" stroke-width="8" />
+    <rect x="18" y="18" width="264" height="164" fill="#22C55E" stroke="#000000" stroke-width="6" />
+    <circle cx="90" cy="90" r="32" fill="#FFFFFF" stroke="#000000" stroke-width="6" />
+    <rect x="140" y="70" width="110" height="12" fill="#000000" />
+    <rect x="140" y="95" width="90" height="12" fill="#000000" />
+  </g>
+
+  <g transform="translate(450 520) rotate(3)">
+    <rect x="0" y="0" width="250" height="210" fill="#FFFFFF" stroke="#000000" stroke-width="8" />
+    <rect x="20" y="24" width="210" height="26" fill="#000000" />
+    <rect x="20" y="66" width="180" height="16" fill="#000000" />
+    <rect x="20" y="98" width="200" height="16" fill="#000000" />
+    <rect x="20" y="130" width="160" height="16" fill="#000000" />
+    <rect x="20" y="162" width="130" height="16" fill="#000000" />
+    <rect x="180" y="150" width="46" height="46" fill="#22C55E" stroke="#000000" stroke-width="6" />
+  </g>
+
+  <g transform="translate(560 380) rotate(-6)">
+    <rect x="0" y="0" width="150" height="150" fill="#FFFFFF" stroke="#000000" stroke-width="8" />
+    <polygon points="75,24 110,120 40,120" fill="#22C55E" stroke="#000000" stroke-width="6" />
+    <rect x="52" y="70" width="46" height="12" fill="#FFFFFF" stroke="#000000" stroke-width="4" />
+    <rect x="35" y="120" width="80" height="12" fill="#000000" />
+  </g>
+
+  <g transform="translate(270 210)">
+    <circle cx="0" cy="0" r="10" fill="#000000" />
+    <circle cx="36" cy="20" r="8" fill="#000000" />
+    <circle cx="-30" cy="30" r="6" fill="#000000" />
+  </g>
+
+  <g transform="translate(560 260)">
+    <rect x="0" y="0" width="90" height="14" fill="#000000" />
+    <rect x="0" y="22" width="70" height="14" fill="#000000" />
+    <rect x="0" y="44" width="50" height="14" fill="#000000" />
+  </g>
+</svg>

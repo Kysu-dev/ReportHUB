@@ -117,8 +117,8 @@ export default function Home() {
             <div className="relative w-full max-w-lg rotate-2 transition-transform duration-300 hover:rotate-0">
               <div className="aspect-square w-full">
                 <img
-                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuBbtzZUaU8uk7dEWsoQtXKZeGwhmGrwWjdpDkGErYtEo6jvtiMqWQlZt2OQarJ7AEB6iE2Nnky-WkhkWEoJcfQDOp71rMYQ93RPeTgtqDq9W-mLcmplQB3so57leShDxcJOkmKgmeoCZL_lLO8uO7Lh-7wbHjAs5tKxbCoqGreGBIM0Gg1Pe7tpERvAE_oaFd7UkaWSMJQw25sb8o-Eaa9OmO4HAiPaQ5qkiKFyUZBSkSWSEwlYe0JSWDEBY6rBKVrzGuVGSqJAkvY"
-                  alt="Citizen reporting a damaged sidewalk"
+                  src="/collage-hero.svg"
+                  alt="InfraAlert collage with alert and report tiles"
                   className="h-full w-full border-4 border-black object-cover shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]"
                   loading="lazy"
                 />

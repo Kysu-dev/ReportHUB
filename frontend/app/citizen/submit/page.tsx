@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Sidebar from "@/components/sidebar";
+import CitizenPageTitle from "@/components/citizen-page-title";
 import { useAuthStore } from "@/store/authStore";
 import toast from "react-hot-toast";
 
@@ -73,7 +74,7 @@ export default function SubmitReportPage() {
     <div className="bg-[#FFFDD0] min-h-screen flex flex-row">
       <Sidebar routes={citizenRoutes} userRole="citizen" />
       <div className="flex-1 ml-0 md:ml-72 p-6 md:p-12 bg-[radial-gradient(#000_1px,transparent_1px)] [background-size:24px_24px]">
-        <h1 className="text-[48px] font-extrabold uppercase mb-6">Submit Report</h1>
+        <CitizenPageTitle title="Submit Report" className="mb-6" />
         
         <form onSubmit={handleSubmit} className="max-w-2xl space-y-6">
           <div>

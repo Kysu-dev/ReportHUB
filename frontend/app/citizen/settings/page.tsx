@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Sidebar from "@/components/sidebar";
+import CitizenPageTitle from "@/components/citizen-page-title";
 import { getCurrentUser } from "@/lib/utils";
 import { useAuthStore } from "@/store/authStore";
 import toast from "react-hot-toast";
@@ -185,10 +186,8 @@ export default function SettingsPage() {
 
         <main className="flex-1 p-6 md:p-12 overflow-y-auto bg-[radial-gradient(#000_1px,transparent_1px)] [background-size:24px_24px]">
           
-          <div className="mb-12 relative inline-block">
-            <h1 className="text-[48px] leading-[1.1] tracking-[-0.02em] font-extrabold uppercase inline-block bg-[#FFFDD0] px-2 border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
-              Settings
-            </h1>
+          <div className="mb-12">
+            <CitizenPageTitle title="Settings" className="mb-4" />
             <div className="h-[4px] w-32 bg-[#22C55E] mt-2" />
             <p className="text-[18px] leading-[1.5] font-medium mt-6 max-w-2xl bg-white border-4 border-black p-4 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
               Manage your account preferences and application settings.

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import Sidebar from "@/components/sidebar";
+import CitizenPageTitle from "@/components/citizen-page-title";
 import toast from "react-hot-toast";
 
 const citizenRoutes = [
@@ -121,6 +122,7 @@ export default function ReportDetailPage() {
       <Sidebar routes={citizenRoutes} userRole="citizen" />
 
       <div className="flex-1 ml-0 md:ml-72 p-6 md:p-12 overflow-y-auto bg-[radial-gradient(#000_1px,transparent_1px)] [background-size:24px_24px]">
+        <CitizenPageTitle title="Report Detail" className="mb-6" />
         {/* Header Back & Delete */}
         <div className="flex items-center justify-between mb-8">
           <Link href="/citizen/reports">
