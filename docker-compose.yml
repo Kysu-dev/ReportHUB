@@ -1,6 +1,4 @@
-# docker-compose.yml
-
-version: '3.8'
+version: "3.8"
 
 services:
   mysql:
@@ -44,7 +42,7 @@ services:
     depends_on:
       - backend
     environment:
-      NEXT_PUBLIC_API_URL: http://localhost:8080/api
+      NEXT_PUBLIC_API_URL: http://host.docker.internal:8080/api
     networks:
       - infraalert-network
 

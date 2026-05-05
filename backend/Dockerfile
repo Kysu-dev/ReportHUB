@@ -12,6 +12,7 @@ RUN go mod download
 COPY . .
 
 # Build binary
+ENV CGO_ENABLED=0
 RUN go build -o main .
 
 # Final stage
