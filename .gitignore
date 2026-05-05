@@ -1,0 +1,21 @@
+# Env files
+.env
+.env.*
+backend/.env
+backend/.env.*
+frontend/.env
+frontend/.env.*
+
+# Node
+node_modules/
+.next/
+out/
+dist/
+
+# Go
+bin/
+
+# OS/editor
+.DS_Store
+Thumbs.db
+.vscode/

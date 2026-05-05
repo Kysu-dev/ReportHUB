@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Test Tombol</title>
+</head>
+<body style="padding: 50px;">
+  <div style="position: relative; width: 300px;">
+    <input type="password" id="password" style="width: 100%; padding: 10px; padding-right: 40px;">
+    <button 
+      id="toggleBtn" 
+      style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); cursor: pointer; background: transparent; border: none;"
+    >
+      👁️
+    </button>
+  </div>
+
+  <script>
+    const btn = document.getElementById('toggleBtn');
+    const input = document.getElementById('password');
+    
+    btn.onclick = function() {
+      alert('Tombol diklik!');
+      if (input.type === 'password') {
+        input.type = 'text';
+      } else {
+        input.type = 'password';
+      }
+    };
+  </script>
+</body>
+</html>
