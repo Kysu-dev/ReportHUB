@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { getCurrentUser } from "@/lib/utils";
 import { useAuthStore } from "@/store/authStore";
@@ -9,26 +9,18 @@ import toast from "react-hot-toast";
 export default function AdminSettingsPage() {
   const router = useRouter();
   const { logout } = useAuthStore();
+  const currentUser = getCurrentUser();
   const [loading, setLoading] = useState(false);
   const [notifications, setNotifications] = useState(true);
   const [darkMode, setDarkMode] = useState(false);
   const [language, setLanguage] = useState("id");
 
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
+  const [name, setName] = useState(() => currentUser?.name || "");
+  const [email, setEmail] = useState(() => currentUser?.email || "");
+  const [phone, setPhone] = useState(() => currentUser?.phone || "");
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-
-  useEffect(() => {
-    const currentUser = getCurrentUser();
-    if (currentUser) {
-      setName(currentUser.name || "");
-      setEmail(currentUser.email || "");
-      setPhone(currentUser.phone || "");
-    }
-  }, []);
 
   const apiBase = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080/api";
 

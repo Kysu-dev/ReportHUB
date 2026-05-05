@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Sidebar from "@/components/sidebar";
 import CitizenPageTitle from "@/components/citizen-page-title";
@@ -17,29 +17,20 @@ const citizenRoutes = [
 
 export default function SettingsPage() {
   const router = useRouter();
-  const { user, logout } = useAuthStore();
+  const { logout } = useAuthStore();
+  const currentUser = getCurrentUser();
   const [loading, setLoading] = useState(false);
   const [notifications, setNotifications] = useState(true);
   const [darkMode, setDarkMode] = useState(false);
   const [language, setLanguage] = useState("id");
   
   // Form states
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
+  const [name, setName] = useState(() => currentUser?.name || "");
+  const [email, setEmail] = useState(() => currentUser?.email || "");
+  const [phone, setPhone] = useState(() => currentUser?.phone || "");
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-
-  // Load user data
-  useEffect(() => {
-    const currentUser = getCurrentUser();
-    if (currentUser) {
-      setName(currentUser.name || "");
-      setEmail(currentUser.email || "");
-      setPhone(currentUser.phone || "");
-    }
-  }, []);
 
   const handleUpdateProfile = async (e: React.FormEvent) => {
     e.preventDefault();

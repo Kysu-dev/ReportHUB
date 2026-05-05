@@ -1,0 +1,56 @@
+# docker-compose.yml
+
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: infraalert-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: infraalert
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - infraalert-network
+
+  backend:
+    build: ./backend
+    container_name: infraalert-backend
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mysql
+    environment:
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_USER: root
+      DB_PASSWORD: root
+      DB_NAME: infraalert
+      JWT_SECRET: superdupersecretkey
+    networks:
+      - infraalert-network
+
+  frontend:
+    build: ./frontend
+    container_name: infraalert-frontend
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    environment:
+      NEXT_PUBLIC_API_URL: http://localhost:8080/api
+    networks:
+      - infraalert-network
+
+volumes:
+  mysql_data:
+
+networks:
+  infraalert-network:
+    driver: bridge

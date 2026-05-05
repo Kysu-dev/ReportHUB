@@ -124,7 +124,7 @@ export default function Sidebar({ routes, userRole, onLogout }: SidebarProps) {
 
           <div className="mt-4 text-center">
             <p className="text-[10px] font-bold uppercase italic text-stone-500">
-              "Nothing's broken here... yet"
+              &quot;Nothing&apos;s broken here... yet&quot;
             </p>
           </div>
         </div>

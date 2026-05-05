@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft, Eye, EyeOff } from "lucide-react";
-import { register, login } from "@/lib/utils";
+import { register } from "@/lib/utils";
 import { useAuthStore } from "@/store/authStore";
 import toast from "react-hot-toast";
 
@@ -49,8 +49,9 @@ export default function RegisterPage() {
       } else {
         toast.error(result.error || "Registration failed");
       }
-    } catch (error: any) {
-      toast.error(error.message || "Registration failed");
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : "Registration failed";
+      toast.error(message);
     } finally {
       setLoading(false);
     }
@@ -191,7 +192,7 @@ export default function RegisterPage() {
 
         {/* Decorative Footer */}
         <div className="mt-8 text-center opacity-70">
-          <p className="text-xs italic">"Nothing's broken here... yet"</p>
+          <p className="text-xs italic">&quot;Nothing&apos;s broken here... yet&quot;</p>
         </div>
       </div>
     </main>

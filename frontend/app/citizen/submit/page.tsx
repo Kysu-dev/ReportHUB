@@ -63,8 +63,9 @@ export default function SubmitReportPage() {
       } else {
         toast.error(result.error || "Failed to submit report");
       }
-    } catch (error: any) {
-      toast.error(error.message || "Something went wrong");
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : "Something went wrong";
+      toast.error(message);
     } finally {
       setLoading(false);
     }

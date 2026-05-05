@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -17,21 +17,12 @@ function getActiveIndex(pathname: string) {
 export default function Topbar() {
   const pathname = usePathname();
   const activeIndex = getActiveIndex(pathname);
-  const [indicatorIndex, setIndicatorIndex] = useState(() => {
-    if (typeof window === "undefined") {
-      return activeIndex;
-    }
-    const stored = window.sessionStorage.getItem("infraalert-topbar-index");
-    const storedIndex = stored ? Number(stored) : Number.NaN;
-    return Number.isNaN(storedIndex) ? activeIndex : storedIndex;
-  });
+  const indicatorIndex = activeIndex;
 
   useEffect(() => {
-    setIndicatorIndex(activeIndex);
-    window.sessionStorage.setItem(
-      "infraalert-topbar-index",
-      String(activeIndex)
-    );
+    if (typeof window !== "undefined") {
+      window.sessionStorage.setItem("infraalert-topbar-index", String(activeIndex));
+    }
   }, [activeIndex]);
 
   return (
@@ -92,7 +83,7 @@ export default function Topbar() {
         </div>
         
         <div className="text-sm font-black italic text-black/30 tracking-wider">
-          /// 
+          {"///"}
         </div>
         
         <div className="flex gap-1">

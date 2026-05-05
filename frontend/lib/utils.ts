@@ -35,6 +35,17 @@ export interface Report {
   created_at: string;
 }
 
+export interface ReportTimelineItem {
+  status: Report["status"] | string;
+  created_at: string;
+  notes?: string | null;
+}
+
+export interface ReportDetailData {
+  report: Report;
+  timeline?: ReportTimelineItem[];
+}
+
 export interface DashboardStats {
   total_reports: number;
   pending: number;
@@ -119,7 +130,7 @@ export const getReports = async (): Promise<Report[]> => {
   return result.data;
 };
 
-export const getReportById = async (id: string): Promise<any> => {
+export const getReportById = async (id: string): Promise<ReportDetailData> => {
   const token = getToken();
   const response = await fetch(`${API.BASE}${API.REPORT_BY_ID(id)}`, {
     headers: { Authorization: `Bearer ${token}` },

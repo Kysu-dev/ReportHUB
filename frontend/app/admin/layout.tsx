@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Sidebar from "@/components/sidebar";
 import { getCurrentUser } from "@/lib/utils";
@@ -21,10 +21,10 @@ export default function AdminLayout({
 }) {
   const router = useRouter();
   const { logout } = useAuthStore();
-  const [isReady, setIsReady] = useState(false);
+  const user = getCurrentUser();
+  const isReady = Boolean(user && user.role === "admin");
 
   useEffect(() => {
-    const user = getCurrentUser();
     if (!user) {
       router.push("/auth/login-admin");
       return;
@@ -34,8 +34,7 @@ export default function AdminLayout({
       router.push("/auth/login-admin");
       return;
     }
-    setIsReady(true);
-  }, [router]);
+  }, [router, user]);
 
   if (!isReady) {
     return (

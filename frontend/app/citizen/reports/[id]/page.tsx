@@ -6,6 +6,7 @@ import Link from "next/link";
 import Sidebar from "@/components/sidebar";
 import CitizenPageTitle from "@/components/citizen-page-title";
 import toast from "react-hot-toast";
+import type { Report, ReportTimelineItem } from "@/lib/utils";
 
 const citizenRoutes = [
   { label: "Dashboard", href: "/citizen/dashboard", icon: "dashboard" },
@@ -14,7 +15,7 @@ const citizenRoutes = [
   { label: "Settings", href: "/citizen/settings", icon: "settings" },
 ];
 
-const statusConfig: Record<string, { label: string; color: string; textColor: string }> = {
+const statusConfig: Record<Report["status"], { label: string; color: string; textColor: string }> = {
   pending: { label: "PENDING", color: "bg-[#facc15]", textColor: "text-black" },
   in_progress: { label: "IN PROGRESS", color: "bg-blue-400", textColor: "text-black" },
   resolved: { label: "RESOLVED", color: "bg-[#22C55E]", textColor: "text-black" },
@@ -23,8 +24,8 @@ const statusConfig: Record<string, { label: string; color: string; textColor: st
 export default function ReportDetailPage() {
   const params = useParams();
   const router = useRouter();
-  const [report, setReport] = useState<any>(null);
-  const [timeline, setTimeline] = useState<any[]>([]);
+  const [report, setReport] = useState<Report | null>(null);
+  const [timeline, setTimeline] = useState<ReportTimelineItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
@@ -43,8 +44,10 @@ export default function ReportDetailPage() {
       const result = await response.json();
 
       if (result.success) {
-        setReport(result.data.report);
-        setTimeline(result.data.timeline || []);
+        const reportData = result.data.report as Report;
+        const timelineData = (result.data.timeline || []) as ReportTimelineItem[];
+        setReport(reportData);
+        setTimeline(timelineData);
       } else {
         toast.error(result.error || "Report not found");
         router.push("/citizen/reports");
@@ -59,6 +62,7 @@ export default function ReportDetailPage() {
 
   useEffect(() => {
     if (reportId) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       fetchReport();
     }
   }, [reportId]);
@@ -296,7 +300,7 @@ export default function ReportDetailPage() {
                             {new Date(item.created_at).toLocaleString("id-ID")}
                           </p>
                           {item.notes && (
-                            <p className="text-xs text-stone-500 mt-2 italic">"{item.notes}"</p>
+                            <p className="text-xs text-stone-500 mt-2 italic">&ldquo;{item.notes}&rdquo;</p>
                           )}
                         </div>
                       </div>

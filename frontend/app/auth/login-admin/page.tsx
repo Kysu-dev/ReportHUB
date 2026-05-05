@@ -138,7 +138,7 @@ export default function LoginAdminPage() {
         </div>
 
         <div className="mt-8 text-center opacity-70">
-          <p className="text-xs italic">"Nothing's broken here... yet"</p>
+          <p className="text-xs italic">&quot;Nothing&apos;s broken here... yet&quot;</p>
         </div>
       </div>
     </main>

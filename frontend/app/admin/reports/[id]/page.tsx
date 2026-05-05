@@ -4,20 +4,33 @@ import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
 import toast from "react-hot-toast";
-import { getReportById, updateReportStatus } from "@/lib/utils";
+import { getReportById, updateReportStatus, type Report, type ReportTimelineItem } from "@/lib/utils";
 
-const statusOptions = ["pending", "in_progress", "resolved"];
-const statusLabels = { pending: "PENDING", in_progress: "IN PROGRESS", resolved: "RESOLVED" };
-const statusColors = { pending: "bg-[#facc15]", in_progress: "bg-blue-400", resolved: "bg-[#EC4899]" };
+type ReportWithCitizen = Report & {
+  citizen_name?: string;
+  user_name?: string;
+};
+
+const statusOptions: Report["status"][] = ["pending", "in_progress", "resolved"];
+const statusLabels: Record<Report["status"], string> = {
+  pending: "PENDING",
+  in_progress: "IN PROGRESS",
+  resolved: "RESOLVED",
+};
+const statusColors: Record<Report["status"], string> = {
+  pending: "bg-[#facc15]",
+  in_progress: "bg-blue-400",
+  resolved: "bg-[#EC4899]",
+};
 
 export default function AdminReportDetailPage() {
   const params = useParams();
   const reportId = params.id as string;
-  const [report, setReport] = useState<any>(null);
-  const [timeline, setTimeline] = useState<any[]>([]);
+  const [report, setReport] = useState<ReportWithCitizen | null>(null);
+  const [timeline, setTimeline] = useState<ReportTimelineItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [selectedStatus, setSelectedStatus] = useState("pending");
+  const [selectedStatus, setSelectedStatus] = useState<Report["status"]>("pending");
   const [assignee, setAssignee] = useState("");
   const [notes, setNotes] = useState("");
 
@@ -25,9 +38,10 @@ export default function AdminReportDetailPage() {
     try {
       setLoading(true);
       const data = await getReportById(reportId);
-      setReport(data.report);
+      const reportData = data.report as ReportWithCitizen;
+      setReport(reportData);
       setTimeline(data.timeline || []);
-      setSelectedStatus(data.report?.status || "pending");
+      setSelectedStatus(reportData.status || "pending");
     } catch (error) {
       toast.error("Failed to load report");
     } finally {
@@ -37,6 +51,7 @@ export default function AdminReportDetailPage() {
 
   useEffect(() => {
     if (reportId) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       fetchReport();
     }
   }, [reportId]);
@@ -216,7 +231,11 @@ export default function AdminReportDetailPage() {
               <div className="p-6 space-y-4">
                 <div>
                   <label className="text-[14px] font-bold uppercase block mb-2">Update Status</label>
-                  <select value={selectedStatus} onChange={(e) => setSelectedStatus(e.target.value)} className="w-full border-4 border-black bg-[#FFFDD0] p-3 font-medium">
+                  <select
+                    value={selectedStatus}
+                    onChange={(e) => setSelectedStatus(e.target.value as Report["status"])}
+                    className="w-full border-4 border-black bg-[#FFFDD0] p-3 font-medium"
+                  >
                     {statusOptions.map((opt) => (<option key={opt} value={opt}>{statusLabels[opt as keyof typeof statusLabels]}</option>))}
                   </select>
                 </div>
@@ -276,7 +295,9 @@ export default function AdminReportDetailPage() {
                         <p className="text-[12px] text-stone-500">
                           {new Date(item.created_at).toLocaleString("id-ID")}
                         </p>
-                        {item.notes && <p className="text-[12px] text-stone-400 italic">"{item.notes}"</p>}
+                        {item.notes && (
+                          <p className="text-[12px] text-stone-400 italic">&ldquo;{item.notes}&rdquo;</p>
+                        )}
                       </div>
                     </div>
                   ))
