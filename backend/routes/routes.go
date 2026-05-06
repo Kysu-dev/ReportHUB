@@ -10,11 +10,13 @@ import (
 func SetupRouter() *gin.Engine {
 	r := gin.Default()
 
-	// CORS
+	// CORS - Allow all origins for development
 	r.Use(func(c *gin.Context) {
 		c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
 		c.Writer.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
-		c.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
+		c.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization, X-Requested-With")
+		c.Writer.Header().Set("Access-Control-Max-Age", "86400")
+		
 		if c.Request.Method == "OPTIONS" {
 			c.AbortWithStatus(204)
 			return
@@ -30,13 +32,14 @@ func SetupRouter() *gin.Engine {
 	api := r.Group("/api")
 	api.Use(middleware.AuthMiddleware())
 	{
+		// Reports
 		api.POST("/reports", handlers.CreateReport)
 		api.GET("/reports", handlers.GetReports)
 		api.GET("/reports/:id", handlers.GetReportByID)
 		api.DELETE("/reports/:id", handlers.DeleteReport)
 		api.GET("/dashboard/stats", handlers.GetDashboardStats)
 
-		// User profile routes
+		// User profile
 		api.PUT("/user/profile", handlers.UpdateProfile)
 		api.PUT("/user/password", handlers.UpdatePassword)
 		api.DELETE("/user", handlers.DeleteAccount)

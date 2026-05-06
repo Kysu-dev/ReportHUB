@@ -42,7 +42,7 @@ services:
     depends_on:
       - backend
     environment:
-      NEXT_PUBLIC_API_URL: http://host.docker.internal:8080/api
+      NEXT_PUBLIC_API_URL: http://172.18.0.1:8080/api
     networks:
       - infraalert-network
 

@@ -37,6 +37,12 @@ export default function SubmitReportPage() {
     e.preventDefault();
     setLoading(true);
     
+    console.log("=== DEBUG SUBMIT ===");
+    console.log("API URL:", process.env.NEXT_PUBLIC_API_URL);
+    console.log("Token:", token);
+    console.log("Type:", type);
+    console.log("Location:", location);
+    
     try {
       const formData = new FormData();
       formData.append("type", type);
@@ -55,7 +61,9 @@ export default function SubmitReportPage() {
         body: formData,
       });
 
+      console.log("Response status:", response.status);
       const result = await response.json();
+      console.log("Response result:", result);
       
       if (result.success) {
         toast.success("Report submitted successfully!");
@@ -64,6 +72,7 @@ export default function SubmitReportPage() {
         toast.error(result.error || "Failed to submit report");
       }
     } catch (error: unknown) {
+      console.error("Catch error:", error);
       const message = error instanceof Error ? error.message : "Something went wrong";
       toast.error(message);
     } finally {
