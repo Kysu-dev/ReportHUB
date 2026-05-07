@@ -19,6 +19,9 @@ func main() {
 	database.ConnectDB()
 	defer database.CloseDB()
 
+	// Ensure default admin user exists (idempotent)
+	database.SeedAdmin()
+
 	// Setup routes with Gin
 	router := routes.SetupRouter()
 
