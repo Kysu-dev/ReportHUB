@@ -1,11 +1,14 @@
 package handlers
 
 import (
+	"bytes"
 	"database/sql"
+	"encoding/json"
 	"fmt"
 	"infraalert-backend/database"
 	"infraalert-backend/models"
 	"infraalert-backend/utils"
+	"io"
 	"net/http"
 	"time"
 
@@ -20,6 +23,23 @@ func CreateReport(c *gin.Context) {
 	userIDVal, _ := c.Get("user_id")
 	userID := int(userIDVal.(float64))
 
+	// Debug: print headers
+	fmt.Println("=== CREATE REPORT ===")
+	fmt.Println("Content-Type:", c.GetHeader("Content-Type"))
+	fmt.Println("Authorization:", c.GetHeader("Authorization"))
+
+	// Baca raw body untuk debug
+	body, err := io.ReadAll(c.Request.Body)
+	if err != nil {
+		fmt.Println("Error reading body:", err)
+		utils.ErrorResponse(c, http.StatusBadRequest, "Failed to read request body")
+		return
+	}
+	fmt.Println("Raw Body:", string(body))
+
+	// Restore body untuk binding
+	c.Request.Body = io.NopCloser(bytes.NewBuffer(body))
+
 	var req struct {
 		Type        string `json:"type"`
 		Severity    string `json:"severity"`
@@ -29,11 +49,15 @@ func CreateReport(c *gin.Context) {
 	}
 
 	if err := c.ShouldBindJSON(&req); err != nil {
-		utils.ErrorResponse(c, http.StatusBadRequest, "Invalid request body: "+err.Error())
+		fmt.Println("JSON Bind error:", err.Error())
+		utils.ErrorResponse(c, http.StatusBadRequest, "Invalid JSON: "+err.Error())
 		return
 	}
 
+	fmt.Printf("Parsed request: Type=%s, Location=%s, Severity=%s, ImageURL=%s\n", req.Type, req.Location, req.Severity, req.ImageURL)
+
 	if req.Type == "" || req.Location == "" {
+		fmt.Println("Validation failed: Type or Location empty")
 		utils.ErrorResponse(c, http.StatusBadRequest, "Type and location are required")
 		return
 	}
@@ -49,12 +73,14 @@ func CreateReport(c *gin.Context) {
 	`, reportID, userID, req.Type, req.Severity, req.Location, req.Description, req.ImageURL)
 
 	if err != nil {
+		fmt.Println("Database error:", err)
 		utils.ErrorResponse(c, http.StatusInternalServerError, "Failed to create report: "+err.Error())
 		return
 	}
 
 	reportDBID, err := result.LastInsertId()
 	if err != nil {
+		fmt.Println("LastInsertId error:", err)
 		utils.ErrorResponse(c, http.StatusInternalServerError, "Failed to get report ID")
 		return
 	}
@@ -65,6 +91,7 @@ func CreateReport(c *gin.Context) {
 	`, reportDBID, "pending", "Report submitted")
 
 	if err != nil {
+		fmt.Println("Timeline insert error:", err)
 		utils.ErrorResponse(c, http.StatusInternalServerError, "Failed to create timeline: "+err.Error())
 		return
 	}
@@ -79,10 +106,12 @@ func CreateReport(c *gin.Context) {
 	)
 
 	if err != nil {
+		fmt.Println("Fetch created report error:", err)
 		utils.ErrorResponse(c, http.StatusInternalServerError, "Failed to fetch created report")
 		return
 	}
 
+	fmt.Println("Report created successfully:", report.ReportID)
 	utils.SuccessResponse(c, "Report created successfully", report)
 }
 

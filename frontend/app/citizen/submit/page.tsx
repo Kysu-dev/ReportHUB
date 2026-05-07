@@ -38,6 +38,17 @@ export default function SubmitReportPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Validasi sebelum submit
+    if (!type) {
+      toast.error("Please select an issue type");
+      return;
+    }
+    if (!location.trim()) {
+      toast.error("Please enter a location");
+      return;
+    }
+
     setLoading(true);
 
     let imageUrl = "";
@@ -73,6 +84,16 @@ export default function SubmitReportPage() {
     // STEP 2: Submit report ke backend
     try {
       const apiBase = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080/api";
+      
+      const payload = {
+        type,
+        severity,
+        location,
+        description,
+        image_url: imageUrl,
+      };
+
+      console.log("Submitting report:", payload);
 
       const response = await fetch(`${apiBase}/reports`, {
         method: "POST",
@@ -80,26 +101,26 @@ export default function SubmitReportPage() {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({
-          type,
-          severity,
-          location,
-          description,
-          image_url: imageUrl,
-        }),
+        body: JSON.stringify(payload),
       });
 
       const result = await response.json();
+      console.log("Response status:", response.status, "Response:", result);
+
+      if (!response.ok) {
+        throw new Error(result.error || result.message || `Error ${response.status}`);
+      }
 
       if (result.success) {
         toast.success("Report submitted successfully!");
         router.push("/citizen/reports");
       } else {
-        toast.error(result.error || "Failed to submit report");
+        toast.error(result.error || result.message || "Failed to submit report");
       }
     } catch (error: unknown) {
       console.error("Submit error:", error);
-      toast.error("Something went wrong");
+      const errorMsg = error instanceof Error ? error.message : "Something went wrong";
+      toast.error(errorMsg);
     } finally {
       setLoading(false);
     }
