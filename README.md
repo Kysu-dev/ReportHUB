@@ -66,16 +66,12 @@ Diset sebagai build arg saat `docker build` dan/atau environment di ECS task def
 
 ---
 
-## Admin Seed (User Admin Otomatis)
+## Akun Admin (Seed)
 
-Backend memiliki fungsi **seed admin** di:
+Aplikasi otomatis membuat akun admin default di database (RDS) saat backend berjalan.
 
-- `backend/database/seed.go` → fungsi `SeedAdmin()`
+**Data akun admin default:**
 
-Fungsi ini dipanggil di `backend/main.go`:
+- Email  : `admin@gmail.com`
+- Password : `admin123`
 
-```go
-database.ConnectDB()
-defer database.CloseDB()
-
-database.SeedAdmin()
