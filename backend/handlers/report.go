@@ -6,10 +6,7 @@ import (
 	"infraalert-backend/database"
 	"infraalert-backend/models"
 	"infraalert-backend/utils"
-	"mime/multipart"
 	"net/http"
-	"os"
-	"path/filepath"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -19,72 +16,49 @@ func generateReportID() string {
 	return fmt.Sprintf("IA-%03d", time.Now().UnixNano()%1000+1)
 }
 
-// Upload file ke local storage
-func uploadFileLocal(c *gin.Context, file *multipart.FileHeader) (string, error) {
-	uploadDir := "uploads"
-	if _, err := os.Stat(uploadDir); os.IsNotExist(err) {
-		os.MkdirAll(uploadDir, 0755)
-	}
-
-	ext := filepath.Ext(file.Filename)
-	filename := fmt.Sprintf("%d%s", time.Now().UnixNano(), ext)
-	filePath := filepath.Join(uploadDir, filename)
-
-	if err := c.SaveUploadedFile(file, filePath); err != nil {
-		return "", err
-	}
-
-	return "/uploads/" + filename, nil
-}
-
 func CreateReport(c *gin.Context) {
 	userIDVal, _ := c.Get("user_id")
 	userID := int(userIDVal.(float64))
 
-	type_ := c.PostForm("type")
-	severity := c.PostForm("severity")
-	location := c.PostForm("location")
-	description := c.PostForm("description")
+	var req struct {
+		Type        string `json:"type"`
+		Severity    string `json:"severity"`
+		Location    string `json:"location"`
+		Description string `json:"description"`
+		ImageURL    string `json:"image_url"`
+	}
 
-	if type_ == "" || location == "" {
+	if err := c.ShouldBindJSON(&req); err != nil {
+		utils.ErrorResponse(c, http.StatusBadRequest, "Invalid request body: "+err.Error())
+		return
+	}
+
+	if req.Type == "" || req.Location == "" {
 		utils.ErrorResponse(c, http.StatusBadRequest, "Type and location are required")
 		return
 	}
-	if severity == "" {
-		severity = "medium"
-	}
-
-	var imageURL string
-	file, err := c.FormFile("image")
-	if err == nil {
-		imageURL, err = uploadFileLocal(c, file)
-		if err != nil {
-			utils.ErrorResponse(c, http.StatusInternalServerError, "Failed to upload image: "+err.Error())
-			return
-		}
+	if req.Severity == "" {
+		req.Severity = "medium"
 	}
 
 	reportID := generateReportID()
 
-	// INSERT INTO reports
 	result, err := database.DB.Exec(`
 		INSERT INTO reports (report_id, user_id, type, severity, location, description, image_url)
 		VALUES (?, ?, ?, ?, ?, ?, ?)
-	`, reportID, userID, type_, severity, location, description, imageURL)
+	`, reportID, userID, req.Type, req.Severity, req.Location, req.Description, req.ImageURL)
 
 	if err != nil {
 		utils.ErrorResponse(c, http.StatusInternalServerError, "Failed to create report: "+err.Error())
 		return
 	}
 
-	// Ambil ID laporan yang baru dibuat (INTEGER)
 	reportDBID, err := result.LastInsertId()
 	if err != nil {
 		utils.ErrorResponse(c, http.StatusInternalServerError, "Failed to get report ID")
 		return
 	}
 
-	// INSERT INTO report_timelines dengan report_id berupa INTEGER
 	_, err = database.DB.Exec(`
 		INSERT INTO report_timelines (report_id, status, notes)
 		VALUES (?, ?, ?)
@@ -165,7 +139,6 @@ func GetReportByID(c *gin.Context) {
 
 	var err error
 
-	// Ambil data report
 	if role != "admin" {
 		userID := int(userIDVal.(float64))
 		err = database.DB.QueryRow(`
@@ -197,7 +170,6 @@ func GetReportByID(c *gin.Context) {
 	report.ID = reportDBID
 	report.UserID = reportUserID
 
-	// Get timeline menggunakan reportDBID (INTEGER)
 	rows, err := database.DB.Query(`
 		SELECT id, report_id, status,
 			COALESCE(notes, ''),

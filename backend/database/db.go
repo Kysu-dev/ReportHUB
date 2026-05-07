@@ -14,13 +14,17 @@ var DB *sql.DB
 func ConnectDB() {
 	config.LoadConfig()
 
-	// MySQL connection string
-	connStr := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local",
+	// First connect without database name to create it if needed
+	dbName := config.AppConfig.DBName
+	if dbName == "" {
+		dbName = "infraalert"
+	}
+
+	connStr := fmt.Sprintf("%s:%s@tcp(%s:%s)/?charset=utf8mb4&parseTime=True&loc=Local",
 		config.AppConfig.DBUser,
 		config.AppConfig.DBPassword,
 		config.AppConfig.DBHost,
 		config.AppConfig.DBPort,
-		config.AppConfig.DBName,
 	)
 
 	var err error
@@ -33,9 +37,35 @@ func ConnectDB() {
 		log.Fatal("Database ping failed:", err)
 	}
 
+	// Create database if not exists
+	_, err = DB.Exec(fmt.Sprintf("CREATE DATABASE IF NOT EXISTS `%s`", dbName))
+	if err != nil {
+		log.Fatal("Failed to create database:", err)
+	}
+
+	// Close initial connection
+	DB.Close()
+
+	// Connect to the specific database
+	connStrWithDB := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local",
+		config.AppConfig.DBUser,
+		config.AppConfig.DBPassword,
+		config.AppConfig.DBHost,
+		config.AppConfig.DBPort,
+		dbName,
+	)
+
+	DB, err = sql.Open("mysql", connStrWithDB)
+	if err != nil {
+		log.Fatal("Failed to connect to database:", err)
+	}
+
+	if err = DB.Ping(); err != nil {
+		log.Fatal("Database ping failed:", err)
+	}
+
 	log.Println("Database connected successfully")
 	CreateTables()
-	SeedAdmin()
 }
 
 func CloseDB() {

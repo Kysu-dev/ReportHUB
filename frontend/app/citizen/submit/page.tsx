@@ -14,6 +14,9 @@ const citizenRoutes = [
   { label: "Settings", href: "/citizen/settings", icon: "settings" },
 ];
 
+const CLOUDINARY_CLOUD_NAME = "dizxhou7e";
+const CLOUDINARY_UPLOAD_PRESET = "infraalert-preset";
+
 export default function SubmitReportPage() {
   const router = useRouter();
   const { token } = useAuthStore();
@@ -36,35 +39,58 @@ export default function SubmitReportPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    
-    console.log("=== DEBUG SUBMIT ===");
-    console.log("API URL:", process.env.NEXT_PUBLIC_API_URL);
-    console.log("Token:", token);
-    console.log("Type:", type);
-    console.log("Location:", location);
-    
-    try {
-      const formData = new FormData();
-      formData.append("type", type);
-      formData.append("severity", severity);
-      formData.append("location", location);
-      formData.append("description", description);
-      if (imageFile) {
-        formData.append("image", imageFile);
-      }
 
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/reports`, {
+    let imageUrl = "";
+
+    // STEP 1: Upload gambar ke Cloudinary
+    if (imageFile) {
+      const cloudinaryFormData = new FormData();
+      cloudinaryFormData.append("file", imageFile);
+      cloudinaryFormData.append("upload_preset", CLOUDINARY_UPLOAD_PRESET);
+
+      try {
+        const cloudinaryRes = await fetch(
+          `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`,
+          {
+            method: "POST",
+            body: cloudinaryFormData,
+          }
+        );
+
+        const cloudinaryData = await cloudinaryRes.json();
+        if (!cloudinaryRes.ok) {
+          throw new Error(cloudinaryData.error?.message || "Cloudinary upload failed");
+        }
+        imageUrl = cloudinaryData.secure_url;
+        toast.success("Foto berhasil diupload!");
+      } catch (err: any) {
+        toast.error(err.message || "Gagal upload foto");
+        setLoading(false);
+        return;
+      }
+    }
+
+    // STEP 2: Submit report ke backend
+    try {
+      const apiBase = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080/api";
+
+      const response = await fetch(`${apiBase}/reports`, {
         method: "POST",
         headers: {
+          "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: formData,
+        body: JSON.stringify({
+          type,
+          severity,
+          location,
+          description,
+          image_url: imageUrl,
+        }),
       });
 
-      console.log("Response status:", response.status);
       const result = await response.json();
-      console.log("Response result:", result);
-      
+
       if (result.success) {
         toast.success("Report submitted successfully!");
         router.push("/citizen/reports");
@@ -72,9 +98,8 @@ export default function SubmitReportPage() {
         toast.error(result.error || "Failed to submit report");
       }
     } catch (error: unknown) {
-      console.error("Catch error:", error);
-      const message = error instanceof Error ? error.message : "Something went wrong";
-      toast.error(message);
+      console.error("Submit error:", error);
+      toast.error("Something went wrong");
     } finally {
       setLoading(false);
     }
