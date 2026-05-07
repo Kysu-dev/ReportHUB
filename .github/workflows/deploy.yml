@@ -10,7 +10,7 @@ env:
   ECR_REPOSITORY_BACKEND: infraalert_backend
   ECR_REPOSITORY_FRONTEND: infraalert_frontend
   ECS_CLUSTER: infraalert-cluster
-  ECS_SERVICE: installer-app-service-n1yfiyko
+  ECS_SERVICE: infraalert-app-service-n1yfiyko
 
 jobs:
   deploy:
