@@ -83,7 +83,7 @@ export default function SubmitReportPage() {
 
     // STEP 2: Submit report ke backend
     try {
-      const apiBase = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080/api";
+      const apiBase = process.env.NEXT_PUBLIC_API_URL || "/api";
       
       const payload = {
         type,

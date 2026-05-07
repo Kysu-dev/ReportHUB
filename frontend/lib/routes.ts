@@ -21,7 +21,9 @@ export const ROUTES = {
 
 // API Endpoints
 export const API = {
-  BASE: process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080/api",
+  // In production, prefer same-origin `/api` (ALB path routing / reverse proxy).
+  // For local dev, set `NEXT_PUBLIC_API_URL=http://localhost:8080/api` (or via docker-compose).
+  BASE: process.env.NEXT_PUBLIC_API_URL || "/api",
   
   // Auth
   REGISTER: "/register",

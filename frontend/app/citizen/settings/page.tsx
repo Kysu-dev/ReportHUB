@@ -36,7 +36,8 @@ export default function SettingsPage() {
     e.preventDefault();
     setLoading(true);
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/user/profile`, {
+      const apiBase = process.env.NEXT_PUBLIC_API_URL || "/api";
+      const response = await fetch(`${apiBase}/user/profile`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -71,7 +72,8 @@ export default function SettingsPage() {
     }
     setLoading(true);
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/user/password`, {
+      const apiBase = process.env.NEXT_PUBLIC_API_URL || "/api";
+      const response = await fetch(`${apiBase}/user/password`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -99,7 +101,8 @@ export default function SettingsPage() {
     if (!confirm("Are you sure you want to delete your account? This action cannot be undone!")) return;
     setLoading(true);
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/user`, {
+      const apiBase = process.env.NEXT_PUBLIC_API_URL || "/api";
+      const response = await fetch(`${apiBase}/user`, {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -122,7 +125,8 @@ export default function SettingsPage() {
 
   const handleExportData = async () => {
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/user/export`, {
+      const apiBase = process.env.NEXT_PUBLIC_API_URL || "/api";
+      const response = await fetch(`${apiBase}/user/export`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },

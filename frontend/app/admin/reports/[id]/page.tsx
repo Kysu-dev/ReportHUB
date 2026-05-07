@@ -109,8 +109,12 @@ export default function AdminReportDetailPage() {
     );
   }
 
-  const apiBase = process.env.NEXT_PUBLIC_API_URL?.replace("/api", "") || "http://localhost:8080";
-  const imageUrl = report.image_url ? `${apiBase}${report.image_url}` : null;
+  const apiOrigin = (process.env.NEXT_PUBLIC_API_URL?.replace(/\/api\/?$/, "") || "").trim();
+  const imageUrl = report.image_url
+    ? report.image_url.startsWith("http")
+      ? report.image_url
+      : `${apiOrigin || ""}${report.image_url}`
+    : null;
   const citizenLabel = report.citizen_name || report.user_name || `User #${report.user_id}`;
 
   return (

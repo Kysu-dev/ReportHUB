@@ -35,7 +35,7 @@ export default function ReportDetailPage() {
     try {
       setLoading(true);
       const token = localStorage.getItem("token");
-      const apiBase = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080/api";
+      const apiBase = process.env.NEXT_PUBLIC_API_URL || "/api";
 
       const response = await fetch(`${apiBase}/reports/${reportId}`, {
         headers: { Authorization: `Bearer ${token}` },
@@ -70,7 +70,7 @@ export default function ReportDetailPage() {
   const handleDelete = async () => {
     try {
       const token = localStorage.getItem("token");
-      const apiBase = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080/api";
+      const apiBase = process.env.NEXT_PUBLIC_API_URL || "/api";
 
       const response = await fetch(`${apiBase}/reports/${reportId}`, {
         method: "DELETE",
@@ -118,8 +118,12 @@ export default function ReportDetailPage() {
     );
   }
 
-  const apiBase = process.env.NEXT_PUBLIC_API_URL?.replace("/api", "") || "http://localhost:8080";
-  const imageUrl = report.image_url ? `${apiBase}${report.image_url}` : null;
+  const apiOrigin = (process.env.NEXT_PUBLIC_API_URL?.replace(/\/api\/?$/, "") || "").trim();
+  const imageUrl = report.image_url
+    ? report.image_url.startsWith("http")
+      ? report.image_url
+      : `${apiOrigin || ""}${report.image_url}`
+    : null;
 
   return (
     <div className="bg-[#FFFDD0] min-h-screen flex flex-row">

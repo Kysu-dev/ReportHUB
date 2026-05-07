@@ -22,7 +22,7 @@ export default function AdminSettingsPage() {
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
-  const apiBase = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080/api";
+  const apiBase = process.env.NEXT_PUBLIC_API_URL || "/api";
 
   const handleUpdateProfile = async (e: React.FormEvent) => {
     e.preventDefault();
